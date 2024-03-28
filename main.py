@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
 
 product_name = input("Product Name: ")
 def col_one(points):
@@ -27,6 +28,8 @@ def profit_cal(tax, mp_price, ps, cp):
 def loss_cal(pp, cp):
     loss = (pp - cp)/pp
     return loss
+
+
 
 # def data_cal(tax, mp_price, ps, cp)
 
@@ -54,12 +57,19 @@ product_d_points = pd.read_csv('price_product_d.csv')
 product_d_price = np.array(col_one(product_d_points)).reshape(-1, 1)
 product_d_sales = np.array(col_two(product_d_points)).reshape(-1, 1)
 
+model = LinearRegression()
+
+def evaluate_model(model, X, y):
+    y_pred = model.predict(X)
+    mse = mean_squared_error(y, y_pred)
+    r2 = r2_score(y, y_pred)
+    return mse, r2
+
 if product_name == "A":
     tax = 9
     mp_price = 60
     current_price_product_a = int(input("Current price of product: "))
     range_price = current_price_product_a - 80
-    model = LinearRegression()
     model.fit(product_a_price, product_a_sales)
     prev_sales = model.predict(np.array(current_price_product_a).reshape(-1, 1))
     print("Previous Sales: ", prev_sales)
@@ -70,6 +80,10 @@ if product_name == "A":
     plt.plot(np.linspace(0, 160, 100).reshape(-1, 1), model.predict(np.linspace(0, 160, 100).reshape(-1, 1)), 'r')
     plt.ylim(0, 100)
     # plt.show()
+    mse, r2 = evaluate_model(model, product_a_price, product_a_sales)
+    print("Model evaluation for Product ", product_name)
+    print("Mean Squared Error (MSE):", mse)
+    print("R-squared (R2):", r2)
 
     print("Choose option------")
     print("1. Increasing sales with 0 loss models      2. Profit centric models")
@@ -106,7 +120,6 @@ elif product_name == "B":
     current_price_product_b = int(input("Current price of product: "))
     range_price = current_price_product_b - 120
 
-    model = LinearRegression()
     model.fit(product_b_price, product_b_sales)
 
     prev_sales = model.predict(np.array(current_price_product_b).reshape(-1, 1))
@@ -118,6 +131,11 @@ elif product_name == "B":
     plt.plot(np.linspace(0, 260, 100).reshape(-1, 1), model.predict(np.linspace(0, 160, 100).reshape(-1, 1)), 'r')
     plt.ylim(0, 100)
     # plt.show()
+
+    mse, r2 = evaluate_model(model, product_b_price, product_b_sales)
+    print("Model evaluation for Product ", product_name)
+    print("Mean Squared Error (MSE):", mse)
+    print("R-squared (R2):", r2)
 
     print("Choose option------")
     print("1. Increasing sales with 0 loss models      2. Profit centric models")
@@ -154,7 +172,6 @@ elif product_name == "C":
     current_price_product_c = int(input("Current price of product: "))
     range_price = current_price_product_c - 240
 
-    model = LinearRegression()
     model.fit(product_c_price, product_c_sales)
 
     prev_sales = model.predict(np.array(current_price_product_c).reshape(-1, 1))
@@ -166,6 +183,11 @@ elif product_name == "C":
     plt.plot(np.linspace(0, 370, 100).reshape(-1, 1), model.predict(np.linspace(0, 160, 100).reshape(-1, 1)), 'r')
     plt.ylim(0, 100)
     # plt.show()
+
+    mse, r2 = evaluate_model(model, product_c_price, product_c_sales)
+    print("Model evaluation for Product ", product_name)
+    print("Mean Squared Error (MSE):", mse)
+    print("R-squared (R2):", r2)
 
     print("Choose option------")
     print("1. Increasing sales with 0 loss models      2. Profit centric models")
@@ -200,7 +222,6 @@ elif product_name == "D":
     current_price_product_d = int(input("Current price of product: "))
     range_price = current_price_product_d - 510
 
-    model = LinearRegression()
     model.fit(product_d_price, product_d_sales)
 
     prev_sales = model.predict(np.array(current_price_product_d).reshape(-1, 1))
@@ -208,10 +229,16 @@ elif product_name == "D":
     prev_price_profit = profit_cal(tax, mp_price, prev_sales, current_price_product_d)
     print("Prev price profit: ", prev_price_profit)
 
+    mse, r2 = evaluate_model(model, product_d_price, product_d_sales)
+    print("Model evaluation for Product ", product_name)
+    print("Mean Squared Error (MSE):", mse)
+    print("R-squared (R2):", r2)
+
     plt.scatter(product_d_price, product_d_sales)
     plt.plot(np.linspace(300, 720, 100).reshape(-1, 1), model.predict(np.linspace(0, 160, 100).reshape(-1, 1)), 'r')
     plt.ylim(0, 100)
     # plt.show()
+
 
     print("Choose option------")
     print("1. Increasing sales with 0 loss models      2. Profit centric models")
